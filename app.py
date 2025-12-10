@@ -4,48 +4,39 @@ import datetime
 import ephem
 from geopy.geocoders import Nominatim
 
-# --- PAGE SETUP (Sabse upar hona chahiye) ---
+# --- PAGE SETUP ---
 st.set_page_config(page_title="Vedic Astro Guide", page_icon="☸️")
 
-# --- API KEY SETUP (Smart Logic) ---
+# --- API KEY SETUP (SECURE WAY) ---
 try:
-    # Pehle Cloud par secret key dhoondhega
-    GOOGLE_API_KEY = st.secrets["GEMINI_API_KEY"]
-except:
-    # Agar Cloud nahi mila (Laptop par), toh ye use karega
-    # 👇👇👇 NIche Inverted Commas ke beech apni asli key daalo 👇👇👇
-    GOOGLE_API_KEY = "AIzaSyBvbX3VL1Qk33U-DdGYTq8TO2GRFl2fCiE" 
-
-# --- AI CONNECT ---
-try:
-    genai.configure(api_key=GOOGLE_API_KEY)
+    # Ye line secrets.toml se key uthayegi (Local aur Cloud dono jagah)
+    api_key = st.secrets["GEMINI_API_KEY"]
+    genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-2.5-flash')
 except Exception as e:
-    st.error(f"AI Error: {e}")
+    st.error("🚨 API Key Missing! Please set GEMINI_API_KEY in .streamlit/secrets.toml")
+    st.stop()
 
-# --- SESSION MEMORY ---
+# --- SESSION ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
-if "chart_data" not in st.session_state:
-    st.session_state.chart_data = None
 
-# --- FUNCTION: LOCATION FINDER ---
+# --- LOCATION ---
 def get_lat_lon(city_name):
     try:
-        geolocator = Nominatim(user_agent="my_astro_app_v1")
+        geolocator = Nominatim(user_agent="vedic_astro_bot_v2")
         loc = geolocator.geocode(city_name)
         if loc: return loc.latitude, loc.longitude
         return None, None
     except:
         return None, None
 
-# --- FUNCTION: VEDIC CHART CALCULATOR ---
+# --- VEDIC MATHS ---
 def get_chart(dob, tob, lat, lon):
     obs = ephem.Observer()
-    obs.lat = str(lat)
-    obs.lon = str(lon)
+    obs.lat, obs.lon = str(lat), str(lon)
     obs.date = datetime.datetime.combine(dob, tob)
-    ayanamsa = 23.86 # Lahiri Ayanamsa Approx
+    ayanamsa = 23.86 # Lahiri Ayanamsa
     
     planets = {
         "Sun ☀️": ephem.Sun(obs), "Moon 🌙": ephem.Moon(obs), 
@@ -64,20 +55,19 @@ def get_chart(dob, tob, lat, lon):
         data[p] = {"sign": signs[int(l/30)], "deg": f"{l%30:.2f}°"}
     return data
 
-# --- UI START ---
+# --- UI LAYOUT ---
 st.title("☸️ Vedic AI Astrologer")
 
-# --- SIDEBAR ---
 with st.sidebar:
     st.header("✨ Birth Details")
     name = st.text_input("Name", "User")
     dob = st.date_input("Date", value=datetime.date(2000, 1, 10))
     tob = st.time_input("Time", value=datetime.time(23, 45))
-    city = st.text_input("City", "Chhindwara") # Default city
+    city = st.text_input("City", "Chhindwara")
     
     st.divider()
-    style = st.radio("Output Style:", ["Pin Points 🎯", "Detailed 📜"])
-    persona = st.radio("Persona:", ["Friend 👊", "Guru 🧘"])
+    style = st.radio("Output:", ["Pin Points 🎯", "Detailed 📜"])
+    persona = st.radio("Guide:", ["Friend 👊", "Guru 🧘"])
     
     btn = st.button("Generate Kundli")
 
@@ -86,80 +76,62 @@ if btn and city:
     lat, lon = get_lat_lon(city)
     
     if lat:
-        with st.spinner("Calculating Planetary Positions..."):
-            # 1. Calculate Chart
+        with st.spinner("Aligning Stars..."):
             chart = get_chart(dob, tob, lat, lon)
             st.session_state.chart_data = chart
-            st.session_state.messages = [] # Reset chat on new generation
+            st.session_state.messages = [] # Reset Chat
             
-            # 2. Prepare System Prompt
-            tone = "Hinglish, slang, emojis" if "Friend" in persona else "Hindi/English, respectful, spiritual"
-            fmt = "bullet points only" if "Pin" in style else "detailed paragraphs"
+            tone = "Hinglish, slangy" if "Friend" in persona else "Formal, Hindi/English mix"
+            fmt = "bullet points" if "Pin" in style else "detailed paragraphs"
             
             sys_msg = f"""
-            Act as an expert Vedic Astrologer. Tone: {tone}. Format: {fmt}.
+            Act as a Vedic Astrologer. Tone: {tone}. Format: {fmt}.
+            User: {name}. City: {city}.
+            CHART: {chart}
             
-            USER DATA:
-            Name: {name}
-            Birth City: {city} (Lat: {lat}, Lon: {lon})
-            
-            PLANETARY CHART (Calculated):
-            {chart}
-            
-            TASK:
+            Task:
             1. Welcome {name}.
-            2. Tell them their Moon Sign (Rashi) based on the chart above.
-            3. Give a 2-line personality insight.
-            4. Ask what they want to know (Career, Love, etc).
+            2. Tell their Moon Sign (Rashi) from chart.
+            3. Give 2 lines on their nature.
+            4. Ask for a question.
             """
             
-            # 3. Call AI
             st.session_state.messages.append({"role": "user", "content": sys_msg})
             try:
-                response = model.generate_content(sys_msg)
-                st.session_state.messages.append({"role": "model", "content": response.text})
+                res = model.generate_content(sys_msg)
+                st.session_state.messages.append({"role": "model", "content": res.text})
             except Exception as e:
                 st.error(f"AI Error: {e}")
     else:
-        st.error("❌ City not found! Please check spelling.")
+        st.error("City not found!")
 
-# --- DISPLAY CHART (CLEAN GRID) ---
-if st.session_state.chart_data:
+# --- DISPLAY ---
+if getattr(st.session_state, 'chart_data', None):
     st.subheader("🌌 Planetary Positions")
-    cols = st.columns(4)
-    for i, (planet, info) in enumerate(st.session_state.chart_data.items()):
-        cols[i % 4].metric(planet, info['sign'], info['deg'])
+    c1, c2, c3, c4 = st.columns(4)
+    items = list(st.session_state.chart_data.items())
+    for i, (p, info) in enumerate(items):
+        [c1, c2, c3, c4][i%4].metric(p, info['sign'], info['deg'])
     st.divider()
 
-# --- CHAT INTERFACE ---
-# Hide system prompt from user view
-for msg in st.session_state.messages:
-    if msg["role"] == "model":
-        with st.chat_message("assistant"):
-            st.markdown(msg["content"])
-    elif msg["role"] == "user" and "Act as an expert" not in msg["content"]:
-        with st.chat_message("user"):
-            st.markdown(msg["content"])
+# --- CHAT ---
+for m in st.session_state.messages:
+    if m["role"] == "model":
+        with st.chat_message("assistant"): st.markdown(m["content"])
+    elif m["role"] == "user" and "Act as" not in m["content"]:
+        with st.chat_message("user"): st.markdown(m["content"])
 
-# --- USER INPUT ---
-if user_query := st.chat_input("Ask a question..."):
-    st.session_state.messages.append({"role": "user", "content": user_query})
-    with st.chat_message("user"):
-        st.markdown(user_query)
+if q := st.chat_input("Ask about future..."):
+    st.session_state.messages.append({"role": "user", "content": q})
+    with st.chat_message("user"): st.markdown(q)
     
     with st.chat_message("assistant"):
-        with st.spinner("Analyzing stars..."):
-            # History convert for AI
-            history_ai = []
-            for m in st.session_state.messages:
-                # System prompt ko user message ki tarah bhejo (Gemini trick)
-                role = "user" if m["role"] in ["user", "system"] else "model"
-                history_ai.append({"role": role, "parts": [m["content"]]})
-            
+        with st.spinner("Thinking..."):
+            hist = [{"role": "user" if m["role"] in ["user","system"] else "model", "parts": [m["content"]]} for m in st.session_state.messages]
             try:
-                chat = model.start_chat(history=history_ai[:-1])
-                response = chat.send_message(user_query)
-                st.markdown(response.text)
-                st.session_state.messages.append({"role": "model", "content": response.text})
-            except Exception as e:
-                st.error("Error connecting to AI. Try again.")
+                chat = model.start_chat(history=hist[:-1])
+                r = chat.send_message(q)
+                st.markdown(r.text)
+                st.session_state.messages.append({"role": "model", "content": r.text})
+            except:
+                st.error("Error connecting.")
