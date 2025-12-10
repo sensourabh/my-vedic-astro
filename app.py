@@ -71,6 +71,24 @@ with st.sidebar:
     
     btn = st.button("Generate Kundli")
 
+# --- YAHAN CHANGE KIYA HAI ---
+            sys = f"""
+            Act as a Vedic Astrologer. Tone: {tone}. Format: {fmt}.
+            
+            User: {name}. 
+            Birth Details: {dob} at {tob} in {city} (Lat: {lat}, Lon: {lon}).
+            
+            PLANETARY CHART: {chart}
+            
+            Task: 
+            1. Welcome {name}.
+            2. Tell them their Moon Sign (Rashi) and Sun Sign based on the chart.
+            3. Since you have the exact time ({tob}), PREDICT their Ascendant (Lagna) yourself based on the chart data.
+            4. DO NOT ask for birth time or details again. Assume the data provided is accurate.
+            5. Answer their specific question or give a general life reading.
+            """
+            # -----------------------------
+
 # --- MAIN LOGIC ---
 if btn and city:
     lat, lon = get_lat_lon(city)
@@ -135,3 +153,4 @@ if q := st.chat_input("Ask about future..."):
                 st.session_state.messages.append({"role": "model", "content": r.text})
             except:
                 st.error("Error connecting.")
+
