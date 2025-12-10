@@ -12,133 +12,119 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- CUSTOM CSS (MATCHING YOUR LOGO 🎨) ---
+# --- VISIBILITY FIX CSS (Clean & Neon) ---
 st.markdown("""
 <style>
-    /* Import modern font - Orbitron for sci-fi feel */
+    /* 1. Google Fonts Import */
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400&display=swap');
 
-    /* Main Background - Deep Space matching logo background */
+    /* 2. Main Background */
     .stApp {
-        background-color: #0A0E14;
-        background-image: radial-gradient(circle at 50% 30%, #1a1f2c 0%, #0A0E14 80%);
-        color: #E0E0E0;
+        background-color: #050505;
+        background-image: linear-gradient(to bottom, #050505, #0a0f1e);
+        color: #FFFFFF; /* Default Text White */
         font-family: 'Roboto', sans-serif;
     }
     
-    /* Sidebar Styling */
-    [data-testid="stSidebar"] {
-        background-color: #111620;
-        border-right: 1px solid #B026FF; /* Neon Purple from logo */
-    }
-    
-    /* ASTROMINI Header Style - Gradient matching the energy flow */
+    /* 3. Headers (Title) - Solid Colors instead of Transparent Gradient */
     .astromini-header {
         font-family: 'Orbitron', sans-serif;
-        background: linear-gradient(to right, #B026FF, #00F5FF);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #00F5FF; /* Electric Blue */
         font-weight: 700;
         font-size: 3.5rem;
-        text-shadow: 0 0 15px rgba(176, 38, 255, 0.6);
+        text-align: left;
         margin-bottom: 0px;
-    }
-    .sub-header {
-        color: #00F5FF; /* Neon Blue */
-        font-family: 'Orbitron', sans-serif;
-        letter-spacing: 1.5px;
-        font-size: 1.1rem;
-        margin-top: -10px;
+        text-shadow: 0px 0px 15px rgba(0, 245, 255, 0.8); /* Glow Effect */
     }
     
-    /* Cyber Planet Cards (Grid) - Glassmorphism aesthetic */
+    .sub-header {
+        font-family: 'Orbitron', sans-serif;
+        color: #B026FF; /* Neon Purple */
+        font-size: 1.2rem;
+        letter-spacing: 2px;
+        margin-top: -10px;
+        text-shadow: 0px 0px 10px rgba(176, 38, 255, 0.6);
+    }
+    
+    /* 4. Sidebar Styling */
+    [data-testid="stSidebar"] {
+        background-color: #0e1117;
+        border-right: 2px solid #00F5FF;
+    }
+    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+        color: #00F5FF !important; /* Force Blue Headers */
+        font-family: 'Orbitron', sans-serif !important;
+    }
+    
+    /* 5. Inputs (Text Boxes) Visibility Fix */
+    .stTextInput input, .stDateInput input, .stTimeInput input {
+        background-color: #1c1f26 !important;
+        color: #FFFFFF !important; /* Bright White Text */
+        border: 1px solid #B026FF !important;
+    }
+    .stSelectSlider div[data-baseweb="slider"] p {
+        color: #FFFFFF !important;
+    }
+
+    /* 6. Planet Cards */
     .planet-card {
-        background: rgba(16, 20, 30, 0.8);
-        border: 1px solid #00F5FF; /* Neon Blue Border */
-        border-radius: 16px;
+        background: #111620;
+        border: 1px solid #00F5FF;
+        border-radius: 12px;
         padding: 15px;
         text-align: center;
         margin-bottom: 15px;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 15px rgba(0, 245, 255, 0.15);
-        transition: all 0.4s ease-in-out;
-    }
-    .planet-card:hover {
-        transform: translateY(-8px) scale(1.02);
-        box-shadow: 0 0 30px rgba(176, 38, 255, 0.5);
-        border-color: #B026FF; /* Glow turns purple on hover */
+        box-shadow: 0 0 10px rgba(0, 245, 255, 0.2);
     }
     .planet-name {
-        color: #FFFFFF;
+        color: #FFD700; /* Gold for Planet Names */
         font-family: 'Orbitron', sans-serif;
+        font-size: 1.3rem;
         font-weight: bold;
-        font-size: 1.2rem;
-        margin-bottom: 8px;
-        text-transform: uppercase;
     }
     .planet-sign {
-        color: #00F5FF;
+        color: #FFFFFF; /* White for Sign */
         font-size: 1.1rem;
-        font-weight: 500;
+        margin: 5px 0;
     }
     .planet-deg {
-        color: #B026FF;
-        font-size: 0.9rem;
+        color: #00F5FF; /* Blue for Degrees */
         font-family: monospace;
-        opacity: 0.8;
     }
 
-    /* Chat Messages (Modern Bubbles) */
+    /* 7. Chat Bubbles */
     .user-msg {
-        background: linear-gradient(135deg, #2b313e, #1c222d);
-        padding: 12px 18px;
-        border-radius: 18px 18px 2px 18px;
-        border-right: 4px solid #00F5FF; /* Blue accent */
-        margin: 10px 0;
-        box-shadow: 4px 4px 10px rgba(0,0,0,0.3);
+        background-color: #262730;
+        color: #FFFFFF;
+        padding: 10px 15px;
+        border-radius: 15px;
+        border-left: 5px solid #FFD700; /* Yellow bar */
+        margin: 5px 0;
     }
     .bot-msg {
-        background: linear-gradient(135deg, #1c222d, #111620);
-        padding: 12px 18px;
-        border-radius: 18px 18px 18px 2px;
-        border-left: 4px solid #B026FF; /* Purple accent */
-        margin: 10px 0;
-        box-shadow: -4px 4px 10px rgba(0,0,0,0.3);
+        background-color: #0E1117;
+        color: #E0E0E0;
+        padding: 10px 15px;
+        border-radius: 15px;
+        border-left: 5px solid #00F5FF; /* Blue bar */
+        border: 1px solid #333;
+        margin: 5px 0;
     }
-    
-    /* Button Styling (Neon Glow Gradient) */
+
+    /* 8. Buttons */
     div.stButton > button {
-        background: linear-gradient(90deg, #B026FF, #00F5FF);
-        color: white;
-        border: none;
-        border-radius: 30px;
-        font-weight: 700;
-        width: 100%;
-        padding: 14px;
+        background-color: #00F5FF;
+        color: black;
         font-family: 'Orbitron', sans-serif;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        box-shadow: 0 0 20px rgba(176, 38, 255, 0.4);
-        transition: all 0.3s ease;
+        font-weight: bold;
+        border-radius: 5px;
+        border: none;
     }
     div.stButton > button:hover {
-        box-shadow: 0 0 35px rgba(0, 245, 255, 0.7);
-        transform: scale(1.03);
-        background: linear-gradient(90deg, #00F5FF, #B026FF); /* Reverse gradient on hover */
+        background-color: #B026FF;
+        color: white;
     }
-    
-    /* Sidebar Input Styling to match theme */
-    .stTextInput input, .stDateInput input, .stTimeInput input, .stSelectSlider div[data-baseweb="slider"] {
-        background-color: #0A0E14 !important;
-        color: #00F5FF !important;
-        border: 1px solid #B026FF !important;
-        border-radius: 8px;
-    }
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-         color: #B026FF !important;
-         font-family: 'Orbitron', sans-serif;
-    }
-    
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -146,7 +132,7 @@ st.markdown("""
 try:
     GOOGLE_API_KEY = st.secrets["GEMINI_API_KEY"]
 except:
-    # 👇👇👇 APNI KEY YAHAN DAALO 👇👇👇
+    # 👇👇👇 YAHAN APNI KEY DAALNA MAT BHOOLNA 👇👇👇
     GOOGLE_API_KEY = "AIzaSy_YAHAN_TERI_ORIGINAL_KEY"
 
 # --- AI CONNECT ---
@@ -154,7 +140,7 @@ try:
     genai.configure(api_key=GOOGLE_API_KEY)
     model = genai.GenerativeModel('gemini-2.5-flash')
 except Exception as e:
-    st.error("🚨 Nano-Link Offline. Check API Key.")
+    st.error("🚨 Connection Error. Check API Key.")
 
 # --- SESSION ---
 if "messages" not in st.session_state:
@@ -165,7 +151,7 @@ if "chart_data" not in st.session_state:
 # --- HELPERS ---
 def get_lat_lon(city_name):
     try:
-        geolocator = Nominatim(user_agent="astromini_bot_v4")
+        geolocator = Nominatim(user_agent="astromini_bot_fixed")
         loc = geolocator.geocode(city_name)
         if loc: return loc.latitude, loc.longitude
         return None, None
@@ -184,7 +170,6 @@ def get_chart(dob, tob, lat, lon):
         "Jupiter ♃": ephem.Jupiter(obs), "Venus ♀️": ephem.Venus(obs), 
         "Saturn ♄": ephem.Saturn(obs)
     }
-    
     signs = ["Aries ♈", "Taurus ♉", "Gemini ♊", "Cancer ♋", "Leo ♌", "Virgo ♍", 
              "Libra ♎", "Scorpio ♏", "Sagittarius ♐", "Capricorn ♑", "Aquarius ♒", "Pisces ♓"]
     
@@ -196,69 +181,53 @@ def get_chart(dob, tob, lat, lon):
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.markdown("### 🕹️ Initialize Deck")
+    st.markdown("### 🕹️ User Controls")
     
-    name = st.text_input("Username", "User")
-    dob = st.date_input("Date Cycle", value=datetime.date(2000, 1, 10))
-    tob = st.time_input("Time Cycle (24h)", value=datetime.time(23, 45))
-    city = st.text_input("Location Node", "Chhindwara")
+    name = st.text_input("Name", "User")
+    dob = st.date_input("Date", value=datetime.date(2000, 1, 10))
+    tob = st.time_input("Time", value=datetime.time(23, 45))
+    city = st.text_input("City", "Chhindwara")
     
     st.markdown("---")
-    st.markdown("### ⚙️ Protocols")
-    style = st.select_slider("Data Density", options=["Nano ⚡", "Mega 📜"])
-    persona = st.radio("AI Personality", ["Cyber-Buddy 🤖", "Vedic Oracle 🧘"])
+    style = st.select_slider("Response Type", options=["Short ⚡", "Detailed 📜"])
+    persona = st.radio("AI Persona", ["Cyber-Buddy 🤖", "Vedic Oracle 🧘"])
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    btn = st.button("🚀 ACTIVATE ASTROMINI")
+    btn = st.button("🚀 LAUNCH SYSTEM")
 
-# --- MAIN AREA HEADER (LOGO INTEGRATED) ---
+# --- HEADER SECTION ---
 col1, col2 = st.columns([1, 5])
 with col1:
-    # ✅ YAHAN LOGO LAGEGA
-    # Make sure 'logo.png' is in the same folder as app.py
+    # Logo Display Logic
     try:
-        st.image("logo.png", width=130)
+        st.image("logo.png", width=120)
     except:
-        # Agar logo file nahi mili toh ye dikhega
-        st.markdown("<div style='font-size: 4rem; text-align: center;'>👾</div>", unsafe_allow_html=True)
-        st.caption("Save logo.png in folder")
+        st.markdown("# 👾") # Fallback if logo missing
 
 with col2:
-    # Title text alignment fix
-    st.markdown("<div style='padding-top: 10px;'></div>", unsafe_allow_html=True)
     st.markdown("<h1 class='astromini-header'>ASTROMINI</h1>", unsafe_allow_html=True)
-    st.markdown("<p class='sub-header'>Pocket-Sized Cosmic Intelligence</p>", unsafe_allow_html=True)
+    st.markdown("<p class='sub-header'>NEURO-LINKED ASTROLOGY</p>", unsafe_allow_html=True)
 
-
-# LOGIC
+# --- MAIN LOGIC ---
 if btn and city:
     lat, lon = get_lat_lon(city)
     if lat:
-        with st.spinner("📡 Establishing uplink to celestial data..."):
+        with st.spinner("🔄 Processing Cosmic Data..."):
             chart = get_chart(dob, tob, lat, lon)
             st.session_state.chart_data = chart
             st.session_state.messages = [] 
             
-            tone = "Tech-savvy, Hinglish, slang, Emojis like 🤖🚀" if "Cyber" in persona else "Mystical, deep, Sanskrit terms, respectful"
-            fmt = "Bullet points, sharp, concise" if "Nano" in style else "Detailed analysis, descriptive paragraphs"
+            tone = "Tech-savvy, Hinglish, Cool" if "Cyber" in persona else "Deep, Spiritual, Hindi/English"
+            fmt = "Bullet points" if "Short" in style else "Detailed analysis"
             
             sys_msg = f"""
-            Act as ASTROMINI, an advanced AI Vedic Astrologer. 
-            **Tone:** {tone}
-            **Format:** {fmt}
+            Act as ASTROMINI (AI Astrologer). Tone: {tone}. Format: {fmt}.
+            User: {name}. Location: {city}.
+            Chart: {chart}
             
-            **USER DATA:**
-            Name: {name}
-            Birth Details: {dob} at {tob} in {city} (Lat: {lat}, Lon: {lon})
-            
-            **CALCULATED VEDIC CHART:**
-            {chart}
-            
-            **INITIAL PROTOCOL:**
-            1. Welcome {name} to the ASTROMINI interface.
-            2. Confirm their 'Moon Node' (Rashi) based on the chart data.
-            3. Process a quick, powerful insight about their core programming (personality).
-            4. Prompt for next directive (Career DB, Love module, etc.).
+            1. Welcome {name}.
+            2. State their Moon Sign (Rashi).
+            3. Give a powerful insight about their nature.
+            4. Ask what they want to know (Love/Career).
             """
             
             st.session_state.messages.append({"role": "user", "content": sys_msg})
@@ -266,15 +235,14 @@ if btn and city:
                 res = model.generate_content(sys_msg)
                 st.session_state.messages.append({"role": "model", "content": res.text})
             except:
-                st.error("⚡ System Failure: API connection lost.")
+                st.error("System Error: Check API.")
     else:
-        st.error("❌ Location Node not found.")
+        st.error("❌ City Not Found.")
 
-# --- DISPLAY CHART (CYBER GRID) ---
+# --- PLANET GRID ---
 if st.session_state.chart_data:
-    st.markdown("<br><hr><br>", unsafe_allow_html=True)
-    st.markdown("<h3 class='sub-header'>🪐 Planetary Data Blocks</h3>", unsafe_allow_html=True)
-    
+    st.markdown("---")
+    st.markdown("### 🪐 Planetary Coordinates")
     data = st.session_state.chart_data
     items = list(data.items())
     
@@ -289,8 +257,7 @@ if st.session_state.chart_data:
                 <div class="planet-name">{p}</div>
                 <div class="planet-sign">{info['sign']}</div>
                 <div class="planet-deg">{info['deg']}</div>
-            </div>
-            """, unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
             
     for i in range(4, 7):
         p, info = items[i]
@@ -300,38 +267,32 @@ if st.session_state.chart_data:
                 <div class="planet-name">{p}</div>
                 <div class="planet-sign">{info['sign']}</div>
                 <div class="planet-deg">{info['deg']}</div>
-            </div>
-            """, unsafe_allow_html=True)
-    st.markdown("<br><hr><br>", unsafe_allow_html=True)
+            </div>""", unsafe_allow_html=True)
 
-# --- CHAT UI (MODERN BUBBLES) ---
-st.markdown("<h3 class='sub-header'>💬 Neuro-Link Chat</h3>", unsafe_allow_html=True)
+# --- CHAT AREA ---
+st.markdown("---")
+st.markdown("### 💬 Data Uplink")
 
 for m in st.session_state.messages:
     if m["role"] == "model":
-        # Bot Avatar: Logo use kar sakte hain ya emoji
         with st.chat_message("assistant", avatar="👾"):
             st.markdown(f"<div class='bot-msg'>{m['content']}</div>", unsafe_allow_html=True)
-    elif m["role"] == "user" and "Act as ASTROMINI" not in m["content"]:
+    elif m["role"] == "user" and "Act as" not in m["content"]:
         with st.chat_message("user", avatar="🧑‍🚀"):
             st.markdown(f"<div class='user-msg'>{m['content']}</div>", unsafe_allow_html=True)
 
-if q := st.chat_input("Input command..."):
+if q := st.chat_input("Enter query..."):
     st.session_state.messages.append({"role": "user", "content": q})
     with st.chat_message("user", avatar="🧑‍🚀"):
         st.markdown(f"<div class='user-msg'>{q}</div>", unsafe_allow_html=True)
     
     with st.chat_message("assistant", avatar="👾"):
-        with st.spinner("PROCESSING..."):
-            history_ai = []
-            for m in st.session_state.messages:
-                role = "user" if m["role"] in ["user", "system"] else "model"
-                history_ai.append({"role": role, "parts": [m["content"]]})
-            
+        with st.spinner("Calculating..."):
+            history_ai = [{"role": "user" if m["role"] in ["user", "system"] else "model", "parts": [m["content"]]} for m in st.session_state.messages]
             try:
                 chat = model.start_chat(history=history_ai[:-1])
-                response = chat.send_message(q)
-                st.markdown(f"<div class='bot-msg'>{response.text}</div>", unsafe_allow_html=True)
-                st.session_state.messages.append({"role": "model", "content": response.text})
+                res = chat.send_message(q)
+                st.markdown(f"<div class='bot-msg'>{res.text}</div>", unsafe_allow_html=True)
+                st.session_state.messages.append({"role": "model", "content": res.text})
             except:
-                st.error("⚡ Connection interrupted.")
+                st.error("Error.")
